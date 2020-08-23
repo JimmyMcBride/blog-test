@@ -9,16 +9,21 @@ import {
   InMemoryCache,
   HttpLink,
 } from "@apollo/client";
+import { AppWrapper } from "sriracha-ui";
+import { BrowserRouter as Router } from "react-router-dom";
+
+import "sriracha-ui/css/main.css";
+
 import * as serviceWorker from "./serviceWorker";
 
 const httpLink = new HttpLink({
-  uri: "https://be-best-markdown-editor-stage.herokuapp.com/cms",
+  uri: process.env.REACT_APP_API,
 });
 
 const authLink = new ApolloLink((operation, forward) => {
   operation.setContext({
     headers: {
-      token: "84e7d6e8-bb64-4bdc-bbb4-54859cb4ebe0",
+      token: process.env.REACT_APP_TOKEN,
     },
   });
   return forward(operation);
@@ -32,7 +37,11 @@ const client = new ApolloClient({
 ReactDOM.render(
   <React.StrictMode>
     <ApolloProvider client={client}>
-      <App />
+      <AppWrapper bg="#FAFAFA">
+        <Router>
+          <App />
+        </Router>
+      </AppWrapper>
     </ApolloProvider>
   </React.StrictMode>,
   document.getElementById("root")

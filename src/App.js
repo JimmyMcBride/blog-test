@@ -1,9 +1,23 @@
 import React from "react";
 import logo from "./logo.svg";
 import "./App.css";
-import axios from "axios";
 import { useQuery } from "@apollo/react-hooks";
 import { gql } from "@apollo/client";
+// import ReactMarkdown from "react-markdown";
+// import { PrismAsync as SyntaxHighlighter } from "react-syntax-highlighter";
+// import dark from "./syntaxTheme";
+import { Wrapper, Card, Box } from "sriracha-ui";
+import { Route } from "react-router";
+import Home from "./Home";
+import Blog from "./Blog";
+
+// const CodeBlock = ({ language, value }) => {
+//   return (
+//     <SyntaxHighlighter style={dark} language={language}>
+//       {value}
+//     </SyntaxHighlighter>
+//   );
+// };
 
 const query = gql`
   query GetPubFiles {
@@ -12,6 +26,8 @@ const query = gql`
       title
       slug
       body
+      thumbnail
+      description
       publishedOn
       updatedAt
     }
@@ -20,31 +36,11 @@ const query = gql`
 
 function App() {
   const { data } = useQuery(query);
-  const [posts, setPosts] = React.useState(null);
-  React.useEffect(() => {
-    axios
-      .get(
-        "https://be-best-markdown-editor-stage.herokuapp.com/api/published-files/folder-name/Jimmy McBride",
-        {
-          headers: { token: "84e7d6e8-bb64-4bdc-bbb4-54859cb4ebe0" },
-        }
-      )
-      .then((res) => setPosts(res.data))
-      .catch((err) => console.log(err.message));
-  }, []);
   console.log("data", data);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-
-        {posts?.map((post) => (
-          <div key={post.id}>
-            <h2>{post.title}</h2>
-            <p>{post.body}</p>
-          </div>
-        ))}
-      </header>
+    <div>
+      <Route exact path="/" component={Home} />
+      <Route path="/:slug" component={Blog} />
     </div>
   );
 }
